@@ -6,7 +6,8 @@
     "backbone": "1.2.0",
     "requirejs": "2.1.17",
     "requirejs-text": "2.0.14",
-    "requirejs-i18n": "2.0.5"
+    "requirejs-i18n": "2.0.5",
+    "react": "~0.13.3"
   },
   "ignore": [
     "test"
