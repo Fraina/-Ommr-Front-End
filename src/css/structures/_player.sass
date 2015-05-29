@@ -1,0 +1,90 @@
+// *************************************
+//
+//   Player
+//
+// -------------------------------------
+//   Template (Haml)
+// -------------------------------------
+//
+//   .AudioPlayer
+//     .AudioPlayer-albumPic
+//     .AudioPlayer-detail
+//       .AudioPlayer-info
+//         .AudioPlayer-trackName
+//         .AudioPlayer-artist
+//         .AudioPlayer-album
+//       .AudioPlayer-controller
+//         .AudioPlayer-progressBar
+//           .canvas-progress
+//         .AudioPlayer-volumeBar
+//           .canvas-volume
+//
+// -------------------------------------
+
+.AudioPlayer
+  @extend .bucket
+  +prefix('border-radius', 5px, 'webkit' 'moz');
+  width: 560px
+  margin: $b-space auto
+  padding: $b-space
+  background-color: rgba(MDcolor(grey, 400), .3)
+
+// -------------------------------------
+//   Scaffolding
+// -------------------------------------
+
+.AudioPlayer-albumPic
+  @extend .bucket-media
+  img
+    +prefix('border-radius', 2px, 'webkit' 'moz');
+    width: 100px
+    height: 100px
+    overflow: hidden
+
+.AudioPlayer-detail
+  @extend .bucket-content
+  font-size: $b-fontSize-s
+  color: MDcolor(grey, 600)
+
+.AudioPlayer-trackName
+  font-size: $b-fontSize
+  font-weight: bolder
+  color: MDcolor(grey, 800)
+
+.AudioPlayer-controller
+  @extend .bucket
+  margin-top: $b-space-s
+
+.AudioPlayer-progress,
+.AudioPlayer-volume
+  @extend .bucket-content
+  position: relative
+  height: 22px
+  padding-left: 30px
+  [class$=Bar]
+    +prefix('border-radius', 2px, 'webkit' 'moz');
+    position: absolute
+    top: 50%
+    margin-top: -2px
+    height: 4px
+    width: 82%
+    display: block
+    background-color: #fff
+    overflow: hidden
+    cursor: pointer
+  i
+    cursor: pointer
+    float: left
+    margin-left: -30px
+    padding: 0 $b-space-xs * 1.5
+  canvas
+    width: 0
+    display: block
+    height: inherit
+    background-color: MDcolor(blue-grey, 500)
+
+.AudioPlayer-progress
+  width: 75%
+
+.AudioPlayer-volume
+  padding-left: $b-space
