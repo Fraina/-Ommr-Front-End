@@ -122,9 +122,9 @@
       return this;
     },
 
-    changeProgress: function(newTime) {
+    changeProgress: function(newCurrentTime) {
       this.pause();
-      this.o.currentTime = newTime;
+      this.o.currentTime = newCurrentTime;
       this.play();
     },
 
