@@ -7,7 +7,9 @@
     "requirejs": "2.1.17",
     "requirejs-text": "2.0.14",
     "requirejs-i18n": "2.0.5",
-    "react": "~0.13.3"
+    "react": "~0.13.3",
+    "flux": "~2.0.2",
+    "eventEmitter": "~4.2.11"
   },
   "ignore": [
     "test"

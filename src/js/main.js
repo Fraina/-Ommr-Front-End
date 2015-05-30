@@ -8,8 +8,11 @@ requirejs.config({
     text: '../bower/requirejs-text/text',
     reactjs: '../bower/react/react-with-addons',
     JSXTransformer: '../bower/react/JSXTransformer',
+    flux: '../bower/flux/dist/Flux',
     jsx: 'vendor/jsx',
-    mock: '../bower/mockjs/dist/mock'
+    eventEmitter: '../bower/eventEmitter/EventEmitter.min',
+    mock: '../bower/mockjs/dist/mock',
+    'object-assign': 'vendor/object-assign'
   },
 
   shim: {
@@ -29,8 +32,8 @@ require([
   'jquery',
   'underscore',
   'reactjs',
-  'jsx!views/player'
-], function ($, _, React, Player) {
+  'jsx!components/AudioPlayer'
+], function ($, _, React, AudioPlayer) {
   'use strict';
 
 });
