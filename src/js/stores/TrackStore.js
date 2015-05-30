@@ -4,10 +4,16 @@
     'constants/AudioConstants',
     'dispatcher/AppDispatcher',
     'eventEmitter',
-    'object-assign'
+    'object-assign',
+    'ommr',
+    'Ajax'
   ], factory);
 
-}) (function(Constants, AppDispatcher, EventEmitter, assign) {
+}) (function(Constants, AppDispatcher, EventEmitter, assign, Ommr, Ajax) {
+
+  var audio = new Ommr(),
+      ajax = new Ajax();
+
 
   var tracks = {};
 

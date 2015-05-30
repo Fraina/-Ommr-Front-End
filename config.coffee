@@ -14,6 +14,8 @@ module.exports =
         jsx: 'vendor/jsx'
         eventEmitter: '../bower/eventEmitter/EventEmitter.min'
         'object-assign': 'vendor/object-assign'
+        ommr: 'vendor/ommr'
+        ajax: 'vendor/ajax.min'
   docco:
     layout: 'linear'
   remarkable:

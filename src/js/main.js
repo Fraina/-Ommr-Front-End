@@ -12,7 +12,9 @@ requirejs.config({
     jsx: 'vendor/jsx',
     eventEmitter: '../bower/eventEmitter/EventEmitter.min',
     mock: '../bower/mockjs/dist/mock',
-    'object-assign': 'vendor/object-assign'
+    'object-assign': 'vendor/object-assign',
+    ommr: 'vendor/ommr',
+    Ajax: 'vendor/ajax.min'
   },
 
   shim: {
