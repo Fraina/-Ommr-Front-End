@@ -31,6 +31,7 @@
         _.each(res.tracks, function(value, key) {
           var ret = {}
           ret['file'] = value.fileName || '';
+          (! _.isUndefined(value.loop)) ? ret['loop'] = value.loop : false;
           if (! _.isUndefined(value.type)) ret.type = value.type;
           audioConfig['sounds'][key] = ret;
 
@@ -48,6 +49,11 @@
       return tracks;
     },
 
+    updatePlayingTrack: function(id) {
+      tracks['nowPlaying'] = id;
+      this.emit(CHANGE_EVENT);
+    },
+
     addChangeListener: function(callback, objectItSelf) {
       this.on(CHANGE_EVENT, callback.bind(objectItSelf));
     },
@@ -63,7 +69,9 @@
   AppDispatcher.register(function(action) {
     switch (action.actionType) {
       case AudioConstants.PLAY_APPOINTED_TRACK:
-        audio.play(action.trackId);
+        var id = action.trackId;
+        audio.play(id);
+        TrackStore.updatePlayingTrack(id);
         break;
 
       default:

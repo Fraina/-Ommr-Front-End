@@ -13,6 +13,7 @@
     },
     {
       "fileName": "777",
+      "loop": true,
       "info": {
         "name": "777",
         "artist": "Eel",
