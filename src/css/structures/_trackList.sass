@@ -1,0 +1,54 @@
+// *************************************
+//
+//   Track List
+//
+// -------------------------------------
+//   Template (Haml)
+// -------------------------------------
+//
+//   .AudioPlayer-Tracks
+//     ul.AudioPlayer-TrackList
+//       li.AudioPlayer-TrackItem
+//         span.AudioPlayer-TrackPlaying
+//         span.AudioPlayer-TrackName
+//         span.AudioPlayer-TrackDuration
+//
+// -------------------------------------
+
+.AudioPlayer-Tracks
+  +box-shadow(0, -1px, 0px, rgba(gray,.1))
+  margin-top: $b-space
+  padding-top: $b-space
+  border-top: 1px MDcolor(grey, 200) solid
+
+// -------------------------------------
+//   Scaffolding
+// -------------------------------------
+
+.AudioPlayer-TrackList
+  @extend .g
+  list-style-type: none
+  font-size: $b-fontSize-s
+  color: MDcolor(grey, 600)
+  margin-bottom: 0
+  margin-left: -$b-space * 1.2
+  span
+    @extend .noselect
+    display: inline-block
+    &:last-child
+      text-align: right
+
+.AudioPlayer-TrackItem
+  +border-radius(5px)
+  cursor: pointer
+  padding: $b-space-xs $b-space-s
+  &:hover
+    color: MDcolor(grey, 900)
+  &.is-playing
+    background-color: MDcolor(blue-grey, 100)
+
+.AudioPlayer-TrackPlaying
+  @extend .ion-ios-musical-notes
+  text-indent: -9999px
+  .is-playing &
+    text-indent: 0

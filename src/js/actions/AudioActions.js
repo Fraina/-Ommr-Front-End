@@ -5,11 +5,14 @@
     'dispatcher/AppDispatcher'
   ], factory);
 
-})(function(Constants, Dispatcher) {
+})(function(AudioConstants, AppDispatcher) {
 
   var AudioActions = {
-    playTrack: function() {
-      console.log('playTrack');
+    playTrack: function(trackId) {
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.PLAY_APPOINTED_TRACK,
+        trackId: trackId
+      })
     }
   }
 

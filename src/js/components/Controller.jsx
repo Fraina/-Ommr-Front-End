@@ -1,10 +1,11 @@
 (function(factory) {
 
   define([
-    'reactjs'
+    'reactjs',
+    'actions/AudioActions'
   ], factory);
 
-})(function(React) {
+})(function(React, actions) {
   'use strict';
 
   class Controller extends React.Component {
