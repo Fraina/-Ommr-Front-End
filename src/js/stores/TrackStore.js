@@ -60,6 +60,7 @@
       var trackId = tracks.nowPlaying || 0,
           isPlaying = (! _.isNull(audio.status())) ? audio.status().status : false,
           ret = {};
+      ret['trackId'] = trackId;
       ret['audio'] = audio.trackList[trackId].audio;
       ret['info'] = tracks[trackId];
       ret['isPlaying'] = isPlaying;
@@ -74,10 +75,7 @@
 
     updateCurrentTime: function() {
       var nowTrackStatus = audio.status(),
-          ret = {
-            'duration': nowTrackStatus.duration,
-            'currentTime': nowTrackStatus.currentTime
-          };
+          ret =  nowTrackStatus.currentTime;
 
       return ret;
     },

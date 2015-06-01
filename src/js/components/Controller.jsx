@@ -16,7 +16,8 @@
       var trackAudio = {};
       this.state = {
         trackAudio: trackAudio,
-        progressWidth: 0
+        progressWidth: 0,
+        playerStatus: 'ion-play'
       };
     }
 
@@ -26,36 +27,51 @@
     }
 
     update() {
-      var nowPlayingAudio = TrackStore.getNowTrack().audio;
-      this.setState({
-        trackAudio: nowPlayingAudio
-      });
+      var nowPlayingTrack = TrackStore.getNowTrack(),
+          isTrackChange = (_.isUndefined(this.state.nowPlaying) || this.state.nowPlaying === nowPlayingTrack.trackId) ? false : true,
+          ret = {
+            playerStatus: 'ion-pause',
+            nowPlaying: String(nowPlayingTrack.trackId),
+            trackAudio: nowPlayingTrack.audio
+          };
+
+      if (! isTrackChange) ret = _.omit(ret, 'playerStatus');
+
+      this.setState(ret)
     }
 
     updateCurrentTime() {
-      var progressObject = TrackStore.updateCurrentTime(),
+      var progressCurrentTime = TrackStore.updateCurrentTime(),
           progressBarWrapper = React.findDOMNode(this.refs.progressBar),
           progressBarWidth = progressBarWrapper.offsetWidth,
           isAvaliable = true;
 
       // hack firefox can't get current duration while using Laima proxy server
-      if (String(progressObject.duration) === 'Infinity') {
+      if (String(this.state.trackAudio.duration) === 'Infinity') {
         isAvaliable = false;
-        this.setState({
-          duration: 'Infinity',
-          progressWidth: progressBarWidth + 'px'
-        });
         TrackStore.removeEvent(AudioConstants.AUDIO_UPDATE_CURRENT_TIME);
         progressBarWrapper.removeEventListener('click', this.changeCurrentTime, false);
+
+        this.setState({ progressWidth: progressBarWidth + 'px' });
+
         return false;
       }
 
       if (isAvaliable) {
         var widthPerPercent = progressBarWidth / 100,
-            progressPercent = (progressObject.currentTime * 100) / progressObject.duration;
-        this.setState({
-          progressWidth: progressPercent * widthPerPercent + 'px'
-        });
+            progressPercent = (progressCurrentTime * 100) / this.state.trackAudio.duration;
+        this.setState({ progressWidth: progressPercent * widthPerPercent + 'px' });
+      }
+    }
+
+    togglePlayerStatus(e) {
+      var nowPlayerStatus = this.state.playerStatus;
+      if (nowPlayerStatus === 'ion-play') {
+        actions.playTrack(this.state.nowPlaying);
+        this.setState({ playerStatus: 'ion-pause' })
+      } else {
+        this.state.trackAudio.pause();
+        this.setState({ playerStatus: 'ion-play' })
       }
     }
 
@@ -64,9 +80,7 @@
           available = true;
 
       // hack firefox can't get current duration while using Laima proxy server
-      if (this.state.duration == 'Infinity') {
-        available = false;
-      }
+      if (String(this.state.trackAudio.duration) === 'Infinity') available = false;
 
       if (available && status) {
         var ret = {
@@ -84,7 +98,7 @@
       return (
         <div className="AudioPlayer-controller">
           <div className="AudioPlayer-progress">
-            <i className="ion-play"></i>
+            <i className={this.state.playerStatus} onClick={this.togglePlayerStatus.bind(this)}></i>
             <div className="AudioPlayer-progressBar" ref="progressBar" onClick={this.changeCurrentTime.bind(this)}>
               <canvas id="canvas-progress" style={progressWidthStyle}></canvas>
             </div>
