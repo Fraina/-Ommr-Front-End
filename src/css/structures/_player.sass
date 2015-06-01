@@ -14,10 +14,17 @@
 //         .AudioPlayer-artist
 //         .AudioPlayer-album
 //       .AudioPlayer-controller
-//         .AudioPlayer-progressBar
-//           canvas.canvas-progress
-//         .AudioPlayer-volumeBar
-//           canvas.canvas-volume
+//         .AudioPlayer-progress
+//           i.ion-play
+//           .AudioPlayer-progressBar
+//             canvas.canvas-progress
+//         .AudioPlayer-volume
+//           i.ion-volume-*
+//           .AudioPlayer-volumeBar
+//             canvas.canvas-volume
+//         .AudioPlayer-mode
+//           i.ion-loop
+//           i.ion-shuffle
 //
 // -------------------------------------
 
@@ -53,7 +60,9 @@
 
 .AudioPlayer-controller
   @extend .bucket
+  position: relative
   margin-top: $b-space
+  width: 90%
 
 .AudioPlayer-progress,
 .AudioPlayer-volume
@@ -77,6 +86,8 @@
     float: left
     margin-left: -30px
     padding: 0 $b-space-xs * 1.5
+    &:hover
+      color: MDcolor(grey, 800)
   canvas
     width: 0
     display: block
@@ -84,7 +95,20 @@
     background-color: MDcolor(blue-grey, 500)
 
 .AudioPlayer-progress
-  width: 75%
+  width: 80%
 
 .AudioPlayer-volume
   padding-left: $b-space
+
+.AudioPlayer-mode
+  position: absolute
+  right: -45px
+  top: 0
+  i
+    +border-radius(2px)
+    cursor: pointer
+    padding: $b-space-xs * 1.2
+    &:hover
+      color: MDcolor(grey, 800)
+    &.is-active
+      color:MDcolor(blue-grey, 500)

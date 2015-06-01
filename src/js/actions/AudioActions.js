@@ -13,6 +13,16 @@
         actionType: AudioConstants.PLAY_APPOINTED_TRACK,
         trackId: trackId
       })
+    },
+
+    changeCurrentTime: function(appointedPosition) {
+      var perPercentWidth = appointedPosition.elementWidth / 100,
+          appointedPercent = ((appointedPosition.pageX - appointedPosition.elementLeft) / perPercentWidth);
+
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.AUDIO_CHANGE_CURRENT_TIME,
+        appointedPercent: appointedPercent
+      })
     }
   }
 
