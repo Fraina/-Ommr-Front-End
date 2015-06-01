@@ -49,6 +49,15 @@
       return tracks;
     },
 
+    getNowTrack: function() {
+      var trackId = tracks.nowPlaying || 0,
+          ret = {};
+      ret['audio'] = audio.trackList[trackId].audio;
+      ret['info'] = tracks[trackId];
+
+      return ret;
+    },
+
     updatePlayingTrack: function(id) {
       tracks['nowPlaying'] = id;
       this.emit(CHANGE_EVENT);
@@ -72,6 +81,13 @@
         var id = action.trackId;
         audio.play(id);
         TrackStore.updatePlayingTrack(id);
+        break;
+
+      case AudioConstants.AUDIO_CHANGE_CURRENT_TIME:
+        var appointedPercent = action.appointedPercent,
+            oldDuration = audio.status().duration,
+            newDuration = (oldDuration / 100) * appointedPercent;
+        audio.changeProgress(newDuration);
         break;
 
       default:

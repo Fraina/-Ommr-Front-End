@@ -1,17 +1,33 @@
 (function(factory) {
 
   define([
-    'reactjs'
+    'reactjs',
+    'stores/TrackStore'
   ], factory);
 
-})(function(React) {
+})(function(React, TrackStore) {
   'use strict';
 
   class Cover extends React.Component {
+    constructor() {
+      var trackCover = 'default.jpg';
+      this.state = {trackCover: trackCover};
+    }
+
+    componentDidMount() {
+      TrackStore.addChangeListener(this.update, this);
+    }
+
+    update() {
+      var nowTrackCover = TrackStore.getNowTrack().info.cover || 'default.jpg';
+      this.setState({trackCover: nowTrackCover});
+    }
+
     render() {
+      var path = 'img/' + this.state.trackCover;
       return (
         <div className="AudioPlayer-cover">
-          <img src="img/cover.jpg" />
+          <img src={path} />
         </div>
       )
     }

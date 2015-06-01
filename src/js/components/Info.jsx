@@ -2,18 +2,33 @@
 
   define([
     'reactjs',
+    'stores/TrackStore'
   ], factory);
 
-})(function(React) {
+})(function(React, TrackStore) {
   'use strict';
 
   class Info extends React.Component {
+    constructor() {
+      var trackInfo = {};
+      this.state = {trackInfo: trackInfo};
+    }
+
+    componentDidMount() {
+      TrackStore.addChangeListener(this.update, this);
+    }
+
+    update() {
+      var nowTrackInfo = TrackStore.getNowTrack().info;
+      this.setState({trackInfo: nowTrackInfo});
+    }
+
     render() {
       return (
         <div className="AudioPlayer-info">
-          <div className="AudioPlayer-trackName">猫侍の逆襲</div>
-          <div className="AudioPlayer-artist">猫叉Master</div>
-          <div className="AudioPlayer-album">猫叉Master 4th Album『follow slowly』</div>
+          <div className="AudioPlayer-trackName">{this.state.trackInfo.name}</div>
+          <div className="AudioPlayer-artist">{this.state.trackInfo.artist}</div>
+          <div className="AudioPlayer-album">{this.state.trackInfo.album}</div>
         </div>
       )
     }
