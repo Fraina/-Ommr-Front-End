@@ -13,9 +13,15 @@
 }) (function(_, AudioConstants, AppDispatcher, EventEmitter, assign, Ommr, Ajax) {
 
   var audio = new Ommr(),
-      ajax = new Ajax();
+      ajax = new Ajax(),
 
-  var tracks = {},
+      tracks = {},
+      nowPlaying = 0,
+      nowPlayMode = 'normal',
+      loop = false,
+      shuffle = false,
+
+      MODE_CHANGE_EVENT = AudioConstants.MODE_CHANGE,
       CHANGE_EVENT = 'change';
 
   var TrackStore = assign({}, EventEmitter.prototype, {
@@ -62,7 +68,7 @@
 
     getNowTrack: function() {
       var temp = (! _.isNull(audio.status())) ? audio.status().status : null;
-      var trackId = tracks.nowPlaying || 0,
+      var trackId = nowPlaying,
           isPlaying = (! _.isNull(audio.status())) ? audio.status().status : 'stop',
           volume = (! _.isNull(audio.status())) ? audio.status().volume : 0,
           muted = (! _.isNull(audio.status())) ? audio.status().muted : false,
@@ -74,12 +80,13 @@
       ret['isPlaying'] = isPlaying;
       ret['volume'] = volume;
       ret['muted'] = muted;
+      ret['mode'] = nowPlayMode;
 
       return ret;
     },
 
     updatePlayingTrack: function(id) {
-      tracks['nowPlaying'] = id;
+      nowPlaying = id;
       this.emit(CHANGE_EVENT);
     },
 
@@ -88,6 +95,25 @@
           ret =  nowTrackStatus.currentTime;
 
       return ret;
+    },
+
+    toggleMode: function(mode) {
+      (mode === 0) ? loop = ! loop : shuffle = ! shuffle;
+      switch (true) {
+        case (! loop && shuffle):
+          nowPlayMode = 'shuffle';
+          break;
+        case (loop && ! shuffle):
+          nowPlayMode = 'loop';
+          break;
+        case (loop && shuffle):
+          nowPlayMode = 'shuffle_loop';
+          break;
+        default:
+          nowPlayMode = 'normal';
+      }
+
+      this.emit(MODE_CHANGE_EVENT);
     },
 
     addEventListener: function(event, callback, objectItSelf) {
@@ -135,6 +161,14 @@
 
       case AudioConstants.AUDIO_TOGGLE_MUTE:
         audio.toggleMuted();
+        break;
+
+      case AudioConstants.TOGGLE_LOOP_MODE:
+        TrackStore.toggleMode(0);
+        break;
+
+      case AudioConstants.TOGGLE_SHUFFLE_MODE:
+        TrackStore.toggleMode(1);
         break;
 
       default:

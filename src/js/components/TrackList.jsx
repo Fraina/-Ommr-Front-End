@@ -40,7 +40,10 @@
     }
 
     update() {
-      this.setState({ tracks: TrackStore.getAllTracks() });
+      this.setState({
+        tracks: TrackStore.getAllTracks(),
+        nowPlaying: TrackStore.getNowTrack().trackId
+      });
     }
 
     DoubleClickHandler(trackId) {
@@ -57,26 +60,23 @@
           <ul className="AudioPlayer-TrackList">
 
             {Object.keys(this.state.tracks).map(function(trackId) {
-              if (trackId != 'nowPlaying') {
-                var track = this.state.tracks[trackId],
-                    itemClass = 'AudioPlayer-TrackItem g',
-                    duration = (! _.isUndefined(track.duration)) ? durationFormat(track.duration) : false;
+              var track = this.state.tracks[trackId],
+                  itemClass = 'AudioPlayer-TrackItem g',
+                  duration = (! _.isUndefined(track.duration)) ? durationFormat(track.duration) : false;
 
-                if (this.state.tracks.nowPlaying === trackId) itemClass += ' is-playing';
+              if (this.state.nowPlaying === trackId) itemClass += ' is-playing';
 
-                return (
-                  <li
-                    className={itemClass}
-                    key={trackId}
-                    onDoubleClick={this.DoubleClickHandler.bind(null, trackId)}
-                    onTouchEnd={this.DoubleClickHandler.bind(null, trackId)}
-                  >
-                    <span className="AudioPlayer-TrackPlaying g-b--1of12"></span>
-                    <span className="AudioPlayer-TrackName g-b--9of12">{track.name}</span>
-                    <span className="AudioPlayer-TrackDuration g-b--2of12">{duration}</span>
-                  </li>
-                )
-              }
+              return (
+                <li className={itemClass}
+                  key={trackId}
+                  onDoubleClick={this.DoubleClickHandler.bind(null, trackId)}
+                  onTouchEnd={this.DoubleClickHandler.bind(null, trackId)}
+                >
+                  <span className="AudioPlayer-TrackPlaying g-b--1of12"></span>
+                  <span className="AudioPlayer-TrackName g-b--9of12">{track.name}</span>
+                  <span className="AudioPlayer-TrackDuration g-b--2of12">{duration}</span>
+                </li>
+              )
             }, this)}
           </ul>
         </div>

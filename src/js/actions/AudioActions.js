@@ -34,6 +34,18 @@
       AppDispatcher.dispatch({
         actionType: AudioConstants.AUDIO_TOGGLE_MUTE
       })
+    },
+
+    toggleLoopMode: function() {
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.TOGGLE_LOOP_MODE
+      })
+    },
+
+    toggleShuffleMode: function() {
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.TOGGLE_SHUFFLE_MODE
+      })
     }
   }
 

@@ -24,6 +24,7 @@
   class Controller extends React.Component {
     constructor() {
       this.state = {
+        mode: '',
         progressWidth: 0,
         playerStatus: 'ion-play',
         volumeStatus: 'ion-volume-medium'
@@ -36,6 +37,7 @@
       TrackStore.addEventListener(AudioConstants.AUDIO_CHANGE_VOLUME, this.updateVolume, this);
       TrackStore.addEventListener(AudioConstants.AUDIO_PLAYING, this.updatePlayerStatusAsPlaying, this);
       TrackStore.addEventListener(AudioConstants.AUDIO_PAUSE, this.updatePlayerStatusAsPause, this);
+      TrackStore.addEventListener(AudioConstants.MODE_CHANGE, this.updateMode, this);
     }
 
     update() {
@@ -47,8 +49,8 @@
           };
       if (! isTrackChange) ret = _.omit(ret, 'playerStatus');
 
-      this.updateVolume();
       this.setState(ret);
+      this.updateVolume();
     }
 
     updateCurrentTime() {
@@ -89,8 +91,9 @@
     }
 
     updateVolume() {
-      var isMuted = TrackStore.getNowTrack().muted,
-          volumeInt = TrackStore.getNowTrack().volume,
+      var nowTrackInfo = TrackStore.getNowTrack(),
+          isMuted = nowTrackInfo.muted,
+          volumeInt = nowTrackInfo.volume,
           volumeBarWrapper = React.findDOMNode(this.refs.volumeBar),
           volumeBarWidth = volumeBarWrapper.offsetWidth,
           widthPerPercent = volumeBarWidth / 100,
@@ -116,6 +119,14 @@
       this.setState(ret);
     }
 
+    toggleVolumeStatus(e) {
+      var nowTrackInfo = TrackStore.getNowTrack();
+      var status = (nowTrackInfo.isPlaying === 'playing') ? true : false;
+      if (status) {
+        actions.toggleMute()
+      }
+    }
+
     changeVolume(e) {
       var percent = getCoordYPercent(e);
       actions.changeVolume(percent);
@@ -130,25 +141,26 @@
     }
 
     togglePlayerStatus(e) {
-      var playerStatus = this.state.playerStatus;
+      var playerStatus = this.state.playerStatus,
+          trackId = String(this.state.playingTrack.trackId);
       if (playerStatus === 'ion-play') {
-        var trackId = String(this.state.playingTrack.trackId);
         actions.playTrack({ trackId: trackId });
       } else {
         this.state.playingTrack.audio.pause();
       }
     }
 
-    toggleVolumeStatus(e) {
-      var status = (TrackStore.getNowTrack().isPlaying === 'playing') ? true : false;
-      if (status) {
-        actions.toggleMute()
-      }
+    updateMode() {
+      this.setState({ mode: TrackStore.getNowTrack().mode })
     }
 
     render() {
       var progressWidthStyle = {width: this.state.progressWidth},
-          volumeWidthStyle = {width: this.state.volumeWidth};
+          volumeWidthStyle = {width: this.state.volumeWidth},
+          mode = this.state.mode,
+          toggleLoopStyle = (mode.match(/loop/) != null) ? 'ion-loop is-active' : 'ion-loop',
+          toggleShuffleStyle = (mode.match(/shuffle/) != null) ? 'ion-shuffle is-active' : 'ion-shuffle';
+
       return (
         <div className="AudioPlayer-controller">
           <div className="AudioPlayer-progress">
@@ -164,8 +176,8 @@
             </div>
           </div>
           <div className="AudioPlayer-mode">
-            <i className="ion-loop"></i>
-            <i className="ion-shuffle"></i>
+            <i className={toggleLoopStyle} onClick={actions.toggleLoopMode}></i>
+            <i className={toggleShuffleStyle} onClick={actions.toggleShuffleMode}></i>
           </div>
         </div>
       )
