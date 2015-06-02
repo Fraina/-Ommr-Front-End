@@ -48,7 +48,6 @@
         _.each(res.tracks, function(value, key) {
           var ret = {}
           ret['file'] = value.fileName || '';
-          (! _.isUndefined(value.loop)) ? ret['loop'] = value.loop : false;
           if (! _.isUndefined(value.type)) ret.type = value.type;
           audioConfig['sounds'][key] = ret;
 
@@ -141,7 +140,10 @@
       case AudioConstants.PLAY_APPOINTED_TRACK:
         var id = action.trackId,
             actionTrigger = action.actionTrigger;
-        if (! _.isUndefined(actionTrigger)) audio.stopAll();
+        if (! _.isUndefined(actionTrigger)) {
+          audio.stopAll();
+          TrackStore.emit(AudioConstants.RESET_PLAYED_TRACKLIST);
+        }
         audio.play(id);
         TrackStore.updatePlayingTrack(id);
         break;

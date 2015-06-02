@@ -37,21 +37,28 @@
       TrackStore.addEventListener(AudioConstants.AUDIO_CHANGE_VOLUME, this.updateVolume, this);
       TrackStore.addEventListener(AudioConstants.AUDIO_PLAYING, this.updatePlayerStatusAsPlaying, this);
       TrackStore.addEventListener(AudioConstants.AUDIO_PAUSE, this.updatePlayerStatusAsPause, this);
+      TrackStore.addEventListener(AudioConstants.AUDIO_ENDED, this.playNextTrack, this);
       TrackStore.addEventListener(AudioConstants.MODE_CHANGE, this.updateMode, this);
+      TrackStore.addEventListener(AudioConstants.RESET_PLAYED_TRACKLIST, this.updateMode, this);
     }
 
     update() {
       var nowPlaying = TrackStore.getNowTrack(),
           isTrackChange = (_.isUndefined(this.state.playingTrack) || this.state.playingTrack.trackId === nowPlaying.trackId) ? false : true,
+          hasLoadTrackListIds = (_.isUndefined(this.state.trackListIds)) ? false : true,
           ret = {
             playingTrack: nowPlaying,
             playerStatus: 'ion-pause'
           };
+
       if (! isTrackChange) ret = _.omit(ret, 'playerStatus');
+      if (! hasLoadTrackListIds) ret['trackListIds'] = _.allKeys(TrackStore.getAllTracks());
 
       this.setState(ret);
       this.updateVolume();
     }
+
+    // progressBar
 
     updateCurrentTime() {
       var progressCurrentTime = TrackStore.updateCurrentTime(),
@@ -89,6 +96,8 @@
         actions.changeCurrentTime(percent);
       }
     }
+
+    // volumeBar
 
     updateVolume() {
       var nowTrackInfo = TrackStore.getNowTrack(),
@@ -132,6 +141,8 @@
       actions.changeVolume(percent);
     }
 
+    // player status
+
     updatePlayerStatusAsPlaying() {
       this.setState({ playerStatus: 'ion-pause' })
     }
@@ -151,7 +162,52 @@
     }
 
     updateMode() {
-      this.setState({ mode: TrackStore.getNowTrack().mode })
+      var mode = TrackStore.getNowTrack().mode,
+          nowPlaying = this.state.playingTrack.trackId,
+          ret = {};
+      if (mode === 'shuffle') this.resetCloneList();
+      this.setState({ mode: mode });
+    }
+
+    resetCloneList() {
+      this.setState({ cloneList: _.clone(this.state.trackListIds) });
+    }
+
+    playNextTrack() {
+      var mode = this.state.mode,
+          trackListIds = this.state.trackListIds,
+          tracksNotPlayYet = this.state.cloneList || null,
+          nowPlaying = this.state.playingTrack.trackId,
+          hasNext = (_.last(trackListIds) === nowPlaying) ? false : true;
+
+      switch(mode) {
+        case 'loop':
+          if (hasNext) {
+            actions.playTrack({ trackId: trackListIds[parseInt(nowPlaying) + 1] });
+          } else {
+            actions.playTrack({ trackId: _.first(trackListIds) });
+          };
+          break;
+        case 'shuffle':
+          if (! tracksNotPlayYet.length) {
+            this.resetCloneList();
+            return false;
+          }
+
+          var leftCount = tracksNotPlayYet.length,
+              randomNum = Math.floor(Math.random() * leftCount),
+              updatedCloneList = _.without(tracksNotPlayYet, tracksNotPlayYet[randomNum]);
+          actions.playTrack({ trackId: tracksNotPlayYet[randomNum] });
+          this.setState({ cloneList: updatedCloneList });
+          break;
+        case 'shuffle_loop':
+           var randomNum = Math.floor(Math.random() * trackListIds.length);
+           actions.playTrack({ trackId: trackListIds[randomNum] });
+           break;
+        default:
+          if (hasNext) actions.playTrack({ trackId: trackListIds[parseInt(nowPlaying) + 1] });
+          return false;
+      }
     }
 
     render() {
