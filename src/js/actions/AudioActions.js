@@ -8,20 +8,31 @@
 })(function(AudioConstants, AppDispatcher) {
 
   var AudioActions = {
-    playTrack: function(trackId) {
+    playTrack: function(action) {
       AppDispatcher.dispatch({
         actionType: AudioConstants.PLAY_APPOINTED_TRACK,
-        trackId: trackId
+        actionTrigger: action.actionTrigger,
+        trackId: action.trackId
       })
     },
 
-    changeCurrentTime: function(appointedPosition) {
-      var perPercentWidth = appointedPosition.elementWidth / 100,
-          appointedPercent = ((appointedPosition.pageX - appointedPosition.elementLeft) / perPercentWidth);
-
+    changeCurrentTime: function(percent) {
       AppDispatcher.dispatch({
         actionType: AudioConstants.AUDIO_CHANGE_CURRENT_TIME,
-        appointedPercent: appointedPercent
+        appointedPercent: percent
+      })
+    },
+
+    changeVolume: function(percent) {
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.AUDIO_CHANGE_VOLUME,
+        appointedPercent: percent
+      })
+    },
+
+    toggleMute: function() {
+      AppDispatcher.dispatch({
+        actionType: AudioConstants.AUDIO_TOGGLE_MUTE
       })
     }
   }

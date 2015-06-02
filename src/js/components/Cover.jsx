@@ -10,8 +10,11 @@
 
   class Cover extends React.Component {
     constructor() {
-      var trackCover = 'default.jpg';
-      this.state = {trackCover: trackCover};
+      var defaultCoverSrc = 'default.png';
+      this.state = {
+        defaultCover: defaultCoverSrc,
+        trackCover: defaultCoverSrc
+      };
     }
 
     componentDidMount() {
@@ -19,8 +22,8 @@
     }
 
     update() {
-      var nowTrackCover = TrackStore.getNowTrack().info.cover || 'default.jpg';
-      this.setState({trackCover: nowTrackCover});
+      var nowTrackCover = TrackStore.getNowTrack().info.cover || this.state.defaultCover;
+      this.setState({ trackCover: nowTrackCover });
     }
 
     render() {

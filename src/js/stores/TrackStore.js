@@ -22,8 +22,12 @@
     init: function() {
       var self = this,
           audioConfig = {
+            'volume': 0.7,
             'callbacks': {
+              playing: function() {self.emit(AudioConstants.AUDIO_PLAYING)},
+              pause: function() {self.emit(AudioConstants.AUDIO_PAUSE)},
               ended: function() {self.emit(AudioConstants.AUDIO_ENDED)},
+              volumechange: function() {self.emit(AudioConstants.AUDIO_CHANGE_VOLUME)},
               timeupdate: function() {self.emit(AudioConstants.AUDIO_UPDATE_CURRENT_TIME)},
               durationchange: function() {self.emit(AudioConstants.AUDIO_DURATION_CHANGE)}
             }
@@ -57,13 +61,19 @@
     },
 
     getNowTrack: function() {
+      var temp = (! _.isNull(audio.status())) ? audio.status().status : null;
       var trackId = tracks.nowPlaying || 0,
-          isPlaying = (! _.isNull(audio.status())) ? audio.status().status : false,
+          isPlaying = (! _.isNull(audio.status())) ? audio.status().status : 'stop',
+          volume = (! _.isNull(audio.status())) ? audio.status().volume : 0,
+          muted = (! _.isNull(audio.status())) ? audio.status().muted : false,
           ret = {};
+
       ret['trackId'] = trackId;
       ret['audio'] = audio.trackList[trackId].audio;
       ret['info'] = tracks[trackId];
       ret['isPlaying'] = isPlaying;
+      ret['volume'] = volume;
+      ret['muted'] = muted;
 
       return ret;
     },
@@ -103,7 +113,9 @@
   AppDispatcher.register(function(action) {
     switch (action.actionType) {
       case AudioConstants.PLAY_APPOINTED_TRACK:
-        var id = action.trackId;
+        var id = action.trackId,
+            actionTrigger = action.actionTrigger;
+        if (! _.isUndefined(actionTrigger)) audio.stopAll();
         audio.play(id);
         TrackStore.updatePlayingTrack(id);
         break;
@@ -113,6 +125,16 @@
             oldDuration = audio.status().duration,
             newDuration = (oldDuration / 100) * appointedPercent;
         audio.changeProgress(newDuration);
+        break;
+
+      case AudioConstants.AUDIO_CHANGE_VOLUME:
+        var appointedPercent = action.appointedPercent,
+            newVolume = appointedPercent / 100;
+        audio.setVolume(newVolume);
+        break;
+
+      case AudioConstants.AUDIO_TOGGLE_MUTE:
+        audio.toggleMuted();
         break;
 
       default:

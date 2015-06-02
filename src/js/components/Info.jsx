@@ -20,7 +20,7 @@
 
     update() {
       var nowTrackInfo = TrackStore.getNowTrack().info;
-      this.setState({trackInfo: nowTrackInfo});
+      this.setState({ trackInfo: nowTrackInfo });
     }
 
     render() {

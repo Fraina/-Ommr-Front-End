@@ -40,11 +40,15 @@
     }
 
     update() {
-      this.setState({tracks: TrackStore.getAllTracks()});
+      this.setState({ tracks: TrackStore.getAllTracks() });
     }
 
     DoubleClickHandler(trackId) {
-      AudioActions.playTrack(trackId);
+      var ret = {
+        actionTrigger: 'trackList',
+        trackId: trackId
+      }
+      AudioActions.playTrack(ret);
     }
 
     render() {
