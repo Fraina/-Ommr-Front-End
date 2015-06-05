@@ -34,8 +34,7 @@
               pause: function() {self.emit(AudioConstants.AUDIO_PAUSE)},
               ended: function() {self.emit(AudioConstants.AUDIO_ENDED)},
               volumechange: function() {self.emit(AudioConstants.AUDIO_CHANGE_VOLUME)},
-              timeupdate: function() {self.emit(AudioConstants.AUDIO_UPDATE_CURRENT_TIME)},
-              durationchange: function() {self.emit(AudioConstants.AUDIO_DURATION_CHANGE)}
+              timeupdate: function() {self.emit(AudioConstants.AUDIO_UPDATE_CURRENT_TIME)}
             }
           };
 
@@ -68,7 +67,7 @@
     getNowTrack: function() {
       var temp = (! _.isNull(audio.status())) ? audio.status().status : null;
       var trackId = nowPlaying,
-          isPlaying = (! _.isNull(audio.status())) ? audio.status().status : 'stop',
+          isPlaying = (! _.isNull(audio.status())) ? audio.status().status : false,
           volume = (! _.isNull(audio.status())) ? audio.status().volume : 0,
           muted = (! _.isNull(audio.status())) ? audio.status().muted : false,
           ret = {};
@@ -76,7 +75,7 @@
       ret['trackId'] = trackId;
       ret['audio'] = audio.trackList[trackId].audio;
       ret['info'] = tracks[trackId];
-      ret['isPlaying'] = isPlaying;
+      ret['isPlaying'] = (isPlaying === 'playing') ? true : false;
       ret['volume'] = volume;
       ret['muted'] = muted;
       ret['mode'] = nowPlayMode;
@@ -84,8 +83,11 @@
       return ret;
     },
 
-    updatePlayingTrack: function(id) {
+    updatePlayingTrack: function(id, duration) {
       nowPlaying = id;
+      if (! _.isFinite(tracks[id].duration)) {
+        tracks[id].duration = duration
+      }
       this.emit(CHANGE_EVENT);
     },
 
@@ -141,11 +143,11 @@
         var id = action.trackId,
             actionTrigger = action.actionTrigger;
         if (! _.isUndefined(actionTrigger)) {
-          audio.stopAll();
+          audio.stop();
           TrackStore.emit(AudioConstants.RESET_PLAYED_TRACKLIST);
         }
         audio.play(id);
-        TrackStore.updatePlayingTrack(id);
+        TrackStore.updatePlayingTrack(id, audio.status().duration);
         break;
 
       case AudioConstants.AUDIO_CHANGE_CURRENT_TIME:

@@ -1,31 +1,22 @@
 (function(factory) {
 
   define([
+    'underscore',
     'reactjs',
     'actions/AudioActions',
     'stores/TrackStore'
   ], factory);
 
-})(function(React, AudioActions, TrackStore) {
+})(function(_, React, AudioActions, TrackStore) {
   'use strict';
 
   var durationFormat = function(duration) {
-    var regExp = /(\d[^\D]*)/g,
-        matches = duration.match(regExp),
-        ret = '';
+    if (! _.isFinite(duration)) return false;
+    var floorDuration = Math.floor(duration),
+        second = (String(floorDuration % 60).length === 1) ? '0' + (floorDuration % 60) : (floorDuration % 60),
+        minute = (floorDuration - second) / 60;
 
-    switch (matches.length) {
-      case 2:
-        ret = matches[0] + ':' + matches[1];
-        break;
-      case 3:
-        ret = matches[0] + ':' + matches[1] + ':' + matches[2];
-        break;
-      default:
-        ret = 'NaN';
-    }
-
-    return ret;
+    return minute + 'm' + second;
   }
 
   class TrackList extends React.Component {
@@ -62,8 +53,8 @@
             {Object.keys(this.state.tracks).map(function(trackId) {
               var track = this.state.tracks[trackId],
                   itemClass = 'AudioPlayer-TrackItem g',
-                  duration = (! _.isUndefined(track.duration)) ? durationFormat(track.duration) : false;
-
+                  // hack firefox can't get current duration while using Laima proxy server
+                  duration = (! _.isFinite(duration)) ? durationFormat(track.duration) : false;
               if (this.state.nowPlaying === trackId) itemClass += ' is-playing';
 
               return (

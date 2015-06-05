@@ -64,14 +64,13 @@
       var progressCurrentTime = TrackStore.updateCurrentTime(),
           progressBarWrapper = React.findDOMNode(this.refs.progressBar),
           progressBarWidth = progressBarWrapper.offsetWidth,
+          duration = this.state.playingTrack.audio.duration,
           isAvaliable = true;
 
       // hack firefox can't get current duration while using Laima proxy server
-      if (String(this.state.playingTrack.audio.duration) === 'Infinity') {
+      if (! _.isFinite(duration)) {
         isAvaliable = false;
-        TrackStore.removeEvent(AudioConstants.AUDIO_UPDATE_CURRENT_TIME);
         progressBarWrapper.removeEventListener('click', this.changeCurrentTime, false);
-
         this.setState({ progressWidth: progressBarWidth + 'px' });
 
         return false;
@@ -85,13 +84,10 @@
     }
 
     changeCurrentTime(e) {
-      var status = (TrackStore.getNowTrack().isPlaying === 'playing') ? true : false,
-          available = true;
-
       // hack firefox can't get current duration while using Laima proxy server
-      if (String(this.state.playingTrack.audio.duration) === 'Infinity') available = false;
-
-      if (available && status) {
+      var duration = this.state.playingTrack.audio.duration,
+          isPlaying = TrackStore.getNowTrack().isPlaying;
+      if (_.isFinite(duration) && isPlaying) {
         var percent = getCoordYPercent(e);
         actions.changeCurrentTime(percent);
       }
@@ -130,8 +126,7 @@
 
     toggleVolumeStatus(e) {
       var nowTrackInfo = TrackStore.getNowTrack();
-      var status = (nowTrackInfo.isPlaying === 'playing') ? true : false;
-      if (status) {
+      if (nowTrackInfo.isPlaying) {
         actions.toggleMute()
       }
     }

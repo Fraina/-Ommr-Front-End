@@ -7,18 +7,24 @@
         "name": "猫侍の逆襲",
         "artist": "猫叉Master",
         "album": "猫叉Master 4th Album『follow slowly』",
-        "duration": "5m03",
         "cover": "cover.jpg"
       }
     },
     {
       "fileName": "777",
-      "loop": true,
       "info": {
         "name": "777",
         "artist": "Eel",
         "album": "pop'n music 8 AC CS pop'n music 6",
-        "duration": "1m46"
+        "duration": "107"
+      }
+    },
+    {
+      "fileName": "Colorful_World",
+      "info": {
+        "name": "Colorful World",
+        "artist": "りぶ",
+        "album": "Dance Dance Evolution 2nd OST"
       }
     }
   ]
