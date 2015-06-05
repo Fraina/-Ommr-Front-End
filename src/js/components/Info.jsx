@@ -24,11 +24,25 @@
     }
 
     render() {
+      var nowPlaying = this.state.trackInfo,
+          coverPath = 'img/',
+          coverFileName = (nowPlaying.cover) ? nowPlaying.cover : 'default.png';
+
+      // replace favicon as cover, also the track name.
+      var link = document.createElement('link'),
+          oldLink = document.getElementById('dynamic-favicon');
+      link.id = 'dynamic-favicon';
+      link.rel = 'shortcut icon';
+      link.href = coverPath + coverFileName;
+      if (oldLink) document.getElementsByTagName('head')[0].removeChild(oldLink);
+      document.getElementsByTagName('head')[0].appendChild(link);
+      document.title = nowPlaying.name + ' - ♪Ommr Front-End';
+
       return (
         <div className="AudioPlayer-info">
-          <div className="AudioPlayer-trackName">{this.state.trackInfo.name}</div>
-          <div className="AudioPlayer-artist">{this.state.trackInfo.artist}</div>
-          <div className="AudioPlayer-album">{this.state.trackInfo.album}</div>
+          <div className="AudioPlayer-trackName">{nowPlaying.name}</div>
+          <div className="AudioPlayer-artist">{nowPlaying.artist}</div>
+          <div className="AudioPlayer-album">{nowPlaying.album}</div>
         </div>
       )
     }
