@@ -28,7 +28,7 @@
           coverPath = 'img/',
           coverFileName = (nowPlaying.cover) ? nowPlaying.cover : 'default.png';
 
-      // replace favicon as cover, also the track name.
+      // replace favicon as cover, also the track title.
       var link = document.createElement('link'),
           oldLink = document.getElementById('dynamic-favicon');
       link.id = 'dynamic-favicon';
