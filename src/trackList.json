@@ -2,12 +2,21 @@
   "preload": true,
   "tracks": [
     {
-      "fileName": "file_name",
+      "fileName": "Allemande-sting",
       "info": {
-        "name": "Track_title",
-        "artist": "Artist",
-        "album": "Album",
-        "cover": "cover_img.jpg"
+        "name": "Allemande(Sting)",
+        "artist": "Wahneta Meixsell",
+        "album": "Youtube - Audio Library",
+        "cover": "youtube.png"
+      }
+    },
+    {
+      "fileName": "Ersatz_Bossa-sting",
+      "info": {
+        "name": "Ersatz Bossa(Sting)",
+        "artist": "John Deley and the 41 Players",
+        "album": "Youtube - Audio Library",
+        "cover": "youtube.png"
       }
     }
   ]
